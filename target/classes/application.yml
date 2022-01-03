@@ -1,0 +1,75 @@
+server:
+   port: 8441
+   ssl.enabled: false
+springdoc:
+   api-docs.path: /v2/api-docs
+   swagger-ui:
+      display-request-duration: true
+      groups-order: DESC
+      operationsSorter: method
+      disable-swagger-default-url: true
+spring:
+   security:
+      oauth2.client.registration:
+         google:
+            clientId: 603788488884-lgsivlbie4887trid1ct29ki1a4f8v0b.apps.googleusercontent.com
+            clientSecret: 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
+            accessTokenUri: https://oauth2.googleapis.com/token
+            auth_provider_x509_cert_url: https://www.googleapis.com/oauth2/v1/certs
+            userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+            redirect_uris:
+            - http://localhost:8441/login/oauth2/code/google
+            javascript_origins:
+            - http://localhost:8441
+            tokenName: oauth_token
+            authenticationScheme: query
+            clientAuthenticationScheme: form
+            scope:
+            - email
+            - profile
+   config:
+      enabled: true
+   jpa:
+# To avoid conflicts, we turn off automatic schema creation with spring.jpa.hibernate.ddl-auto=none.
+      hibernate.ddl-auto: create
+# Without this option, we get the following error:
+# java.sql.SQLFeatureNotSupportedException: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
+      show-sql: true
+# The spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation option is set avoid a recent issue.
+      properties.hibernate:
+         dialect: org.hibernate.dialect.PostgreSQLDialect
+         jdbc.lob.non_contextual_creation: true
+   datasource:
+#To load a database that is not embedded, in Spring Boot 2 we need to add spring.datasource.initialization-mode=always.
+      initialization-mode: always
+      url: jdbc:postgresql://localhost:5432/postgres
+      platform: postgres
+      username: postgres
+      password: root
+   jackson:
+      default-property-inclusion: non-null
+      deserialization:
+         fail-on-unknown-properties: true
+         fail-on-unresolved-object-ids: true
+      mapper:
+         accept-case-insensitive-enums: true
+   main:
+      allow-bean-definition-overriding: true
+      banner-mode: console
+   mvc:
+      throw-exception-if-no-handler-found: true
+logging:
+   level:
+      ROOT: INFO
+      com.rbc: INFO
+      com.rbc.mps.ul90: INFO
+      org.apache.kafka: ERROR
+      org.hibernate: ERROR
+      org.springframework: INFO
+      org.springframework.secuity: ERROR
+      org.springframework.web: ERROR
+      org.springframework.ws.client.MessageTracing.received: ERROR
+      org.springframework.ws.client.MessageTracing.sent: ERROR
+      org.springframework.ws.server.MessageTracing.received: ERROR
+      org.springframework.ws.server.MessageTracing.sent: ERROR
+      reactor.netty.http.client: OFF
